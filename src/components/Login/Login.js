@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
@@ -11,20 +11,25 @@ const Login = (props) => {
   const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
 
+  useEffect(()=>{
+    const identifier = setTimeout(() => {//this function will add delay and execute function below after delay
+      console.log("Validity check")
+      setFormIsValid(
+        enteredEmail.includes('@') && enteredPassword.trim().length > 6
+      );  
+    }, 500);//500 milliseconds is a dely
+    return () =>{//return function will clear the time out so that new timer can be set
+      console.log('Cleanup!');
+      clearTimeout(identifier);
+    };//This return statement will clean the saved keystrokes and will 
+    //execute function after 500 milliseconds after dependency is changed
+  },[enteredEmail,enteredPassword])
   const emailChangeHandler = (event) => {
     setEnteredEmail(event.target.value);
-
-    setFormIsValid(
-      event.target.value.includes('@') && enteredPassword.trim().length > 6
-    );
   };
 
   const passwordChangeHandler = (event) => {
     setEnteredPassword(event.target.value);
-
-    setFormIsValid(
-      event.target.value.trim().length > 6 && enteredEmail.includes('@')
-    );
   };
 
   const validateEmailHandler = () => {
